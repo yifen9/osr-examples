@@ -1,0 +1,20 @@
+services:
+  osr-examples-dev:
+    image: ghcr.io/yifen9/osr-examples-dev
+    container_name: osr-examples-dev
+    working_dir: /workspace
+    environment:
+      - JULIA_DEPOT_PATH=/opt/julia-depot
+      - JULIA_PROJECT=@.
+      - JULIA_NUM_THREADS=auto
+    volumes:
+      - "..:/workspace"
+      - "julia-depot:/opt/julia-depot"
+      - "/mnt/d/data/orcid:/workspace/data/orcid"
+    command: >
+      bash -c "
+        just init &&
+        exec sleep infinity
+      "
+volumes:
+  julia-depot:
