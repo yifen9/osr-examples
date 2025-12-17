@@ -1,0 +1,6 @@
+[deps]
+JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+OSRExamples = "8df12cd0-dcc3-4a1c-8613-108dcee9c0df"
+
+[sources]
+OSRExamples = {path = ".."}

@@ -10,7 +10,6 @@ services:
     volumes:
       - "..:/workspace"
       - "julia-depot:/opt/julia-depot"
-      - "/mnt/d/data/orcid:/workspace/data/orcid"
     command: >
       bash -c "
         just init &&

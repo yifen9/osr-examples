@@ -1,6 +1,6 @@
 {
   "dockerComposeFile": "docker-compose.yaml",
-  "service": "orcid-springrank-dev",
+  "service": "osr-examples-dev",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
   "customizations": {
