@@ -5,7 +5,38 @@ version = "0.1.0"
 authors = ["Li Yifeng <mail@yifen9.li>"]
 
 [deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+ColorTypes = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
+DBInterface = "a10d1c49-ce27-4219-8d33-6db1a4562965"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+DuckDB = "d2f5444f-75bc-4fdf-ac35-56f514c445e1"
+GraphMakie = "1ecd5474-83a3-4783-bb4f-06765db800d2"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+NetworkLayout = "46757867-2c16-5918-afeb-47bfcb05e46a"
 OrcidSpringRank = "5a9d8e7c-1b2a-4c3d-9e8f-7a6b5c4d3e2f"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [sources]
-OrcidSpringRank = {rev = "main", url = "https://github.com/yifen9/orcid-springrank"}
+OrcidSpringRank = {rev = "ba166fab2eaa0b5d7f1429869ce16cea4b930fdf", url = "https://github.com/yifen9/orcid-springrank"}
+
+[compat]
+julia = "1.12.2"
+CSV = "0.10.15"
+CairoMakie = "0.15.8"
+ColorTypes = "0.12.1"
+DBInterface = "2.6.1"
+DataFrames = "1.8.1"
+Dates = "1.11.0"
+DuckDB = "1.4.1"
+GraphMakie = "0.6.3"
+Graphs = "1.13.2"
+JSON3 = "1.14.3"
+Makie = "0.24.8"
+NetworkLayout = "0.4.10"
+SHA = "0.7.0"
+YAML = "0.4.16"

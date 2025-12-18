@@ -1,0 +1,16 @@
+upstream:
+  step01_dir: "01_country_springrank"
+  step02_dir: "02_country_springrank_yearly"
+  config02: "papers/netsci2026/config/02_country_springrank_yearly.yaml"
+
+edges:
+  country_edge: "org_country"
+  country_from: "org_country_from"
+  country_to: "org_country_to"
+  country_w: "cnt_edge_weight"
+
+  year_edge: "aff"
+  year_time: "epi_mid_to"
+  year_from: "org_country_from"
+  year_to: "org_country_to"
+  year_w: "cnt_edge"

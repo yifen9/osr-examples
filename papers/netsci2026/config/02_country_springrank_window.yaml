@@ -1,0 +1,34 @@
+edge: aff
+
+window:
+  time_field: epi_mid_to
+  year_from: 1980
+  year_to: 2024
+  width: 3
+  mode: center_right
+  step: 1
+
+sql: |
+  SELECT
+    {{year}} AS year_center,
+    {{tmin}} AS window_start_year,
+    {{tmax}} AS window_end_year_excl,
+    org_country_from AS src,
+    org_country_to   AS dst,
+    SUM(cnt_edge) AS w,
+    SUM(CASE WHEN org_country_from <> org_country_to THEN cnt_edge ELSE 0 END) AS w_rank
+  FROM edge
+  WHERE org_country_from IS NOT NULL
+    AND org_country_to   IS NOT NULL
+    AND {{time_field}} >= {{tmin}}
+    AND {{time_field}} <  {{tmax}}
+  GROUP BY
+    year_center, window_start_year, window_end_year_excl, src, dst
+
+compute:
+  alg: springrank
+  λ: 1e-8
+  method: auto
+  src: src
+  dst: dst
+  w: w

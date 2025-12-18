@@ -10,6 +10,7 @@ services:
     volumes:
       - "..:/workspace"
       - "julia-depot:/opt/julia-depot"
+      - "/mnt/h/project/github/yifen9/orcid-springrank/products:/workspace/products"
     command: >
       bash -c "
         just init &&
