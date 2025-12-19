@@ -5,7 +5,7 @@ This repository (`osr-examples`) contains the analysis pipeline used to generate
 ## Scope
 
 - Inputs: ORCID-derived products (prebuilt Parquet edge tables).
-- Computations: country-level SpringRank and windowed SpringRank; system-level dispersion metrics; chord diagrams for extrema years.
+- Computations: country-level SpringRank and windowed SpringRank; ...
 - Outputs: CSV tables and vector figures under `out/<paper>/<tag>/`, and a paper bundle under `papers/<paper>/`.
 
 ## Repository boundary
