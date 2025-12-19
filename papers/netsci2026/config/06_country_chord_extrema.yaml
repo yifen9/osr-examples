@@ -29,25 +29,28 @@ draw:
   title_prefix: "CHORD"
 
 chord:
+  title_fontsize: 48
+
   figure_width: 2000
   figure_height: 2000
   figure_padding: 10
 
   ring_inner_radius: 1.00
-  ring_outer_radius: 1.20
+  ring_outer_radius: 1.10
 
   ribbon_attach_radius_out: 1.00
-  ribbon_attach_radius_in: 0.92
+  ribbon_attach_radius_in: 0.975
   ribbon_control_radius: 0.35
 
-  node_gap_deg: 0
+  node_gap_deg: 0.1
   start_angle_deg: 90.0
   clockwise: true
 
   arc_samples: 180
   ribbon_samples: 60
 
-  palette_h0: 0.03
+  palette_h_start: 0.02
+  palette_h_end: 0.85
   palette_s: 0.70
   palette_v: 0.92
 
@@ -56,7 +59,7 @@ chord:
   ribbon_stroke_width: 0.8
 
   label_enable: true
-  label_radius: 1
+  label_radius: 1.15
   label_fontsize: 16
   label_pad: 8
   label_border_width: 2

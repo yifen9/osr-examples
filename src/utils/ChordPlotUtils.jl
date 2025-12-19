@@ -33,12 +33,17 @@ function _hsv_to_rgb(h::Float64, s::Float64, v::Float64)
     end
 end
 
-function _palette(n::Int; h0::Float64, s::Float64, v::Float64)
+function _palette_linear(n::Int; h_start::Float64, h_end::Float64, s::Float64, v::Float64)
     n > 0 || error("n must be > 0")
     cols = NTuple{4,Float64}[]
-    ϕ = 0.6180339887498949
+    if n == 1
+        r, g, b = _hsv_to_rgb(h_start, s, v)
+        push!(cols, (r, g, b, 1.0))
+        return cols
+    end
     for i = 0:(n-1)
-        h = h0 + ϕ * i
+        t = i / (n - 1)
+        h = h_start + (h_end - h_start) * t
         r, g, b = _hsv_to_rgb(h, s, v)
         push!(cols, (r, g, b, 1.0))
     end
@@ -124,13 +129,12 @@ function plot_chord(
     start_deg = Float64(_req(cfg, "start_angle_deg"))
     clockwise = Bool(_req(cfg, "clockwise"))
 
-    col_h0 = Float64(_req(cfg, "palette_h0"))
+    col_hs = Float64(_req(cfg, "palette_h_start"))
+    col_he = Float64(_req(cfg, "palette_h_end"))
     col_s = Float64(_req(cfg, "palette_s"))
     col_v = Float64(_req(cfg, "palette_v"))
 
     ribbon_alpha = Float64(_req(cfg, "ribbon_alpha"))
-    ribbon_stroke_alpha = Float64(_req(cfg, "ribbon_stroke_alpha"))
-    ribbon_stroke_width = Float64(_req(cfg, "ribbon_stroke_width"))
 
     label_enable = Bool(_req(cfg, "label_enable"))
     label_radius = Float64(_req(cfg, "label_radius"))
@@ -171,8 +175,13 @@ function plot_chord(
     avail = 2pi - n * gap
     avail > 0 || error("node_gap_deg too large")
 
-    cols = _palette(n; h0 = col_h0, s = col_s, v = col_v)
+    cols = _palette_linear(n; h_start = col_hs, h_end = col_he, s = col_s, v = col_v)
     node_color = Dict(node_order[i] => cols[i] for i = 1:n)
+
+    rank = Dict{String,Int}()
+    for (i, x) in enumerate(node_order)
+        rank[x] = i
+    end
 
     θ_start = Dict{String,Float64}()
     θ_end = Dict{String,Float64}()
@@ -226,7 +235,7 @@ function plot_chord(
         span = abs(a1 - a0)
         sub = get(src_groups, x, DataFrame(src = String[], dst = String[], w = Float64[]))
         if nrow(sub) > 0
-            ord = sortperm(sub.dst)
+            ord = sortperm([get(rank, String(z), typemax(Int)) for z in sub.dst])
             sub = sub[ord, :]
         end
         wsum = sum(sub.w)
@@ -248,7 +257,7 @@ function plot_chord(
         span = abs(b1 - b0)
         sub = get(dst_groups, x, DataFrame(src = String[], dst = String[], w = Float64[]))
         if nrow(sub) > 0
-            ord = sortperm(sub.src)
+            ord = sortperm([get(rank, String(z), typemax(Int)) for z in sub.src])
             sub = sub[ord, :]
         end
         wsum = sum(sub.w)
@@ -266,7 +275,12 @@ function plot_chord(
     end
 
     fig = Figure(size = (figw, figh), figure_padding = pad)
-    ax = Axis(fig[1, 1], title = title, aspect = DataAspect())
+    ax = Axis(
+        fig[1, 1],
+        title = title,
+        titlesize = Float64(_req(cfg, "title_fontsize")),
+        aspect = DataAspect(),
+    )
     hidespines!(ax)
     hidedecorations!(ax)
 
@@ -309,14 +323,7 @@ function plot_chord(
 
         c = node_color[s]
         fillc = (c[1], c[2], c[3], ribbon_alpha)
-        strokec = (0.0, 0.0, 0.0, ribbon_stroke_alpha)
-        poly!(
-            ax,
-            poly_pts;
-            color = fillc,
-            strokecolor = strokec,
-            strokewidth = ribbon_stroke_width,
-        )
+        poly!(ax, poly_pts; color = fillc)
     end
 
     if label_enable
@@ -327,20 +334,19 @@ function plot_chord(
             p = _polar(label_radius, mid)
             txt = uppercase(x)
             c = node_color[x]
-            boxc = (c[1], c[2], c[3], 1.0)
-            rot = mid
+            borderc = (c[1], c[2], c[3], 1.0)
             textlabel!(
                 ax,
                 [p];
                 text = [txt],
                 fontsize = label_fontsize,
                 text_color = :black,
-                text_rotation = rot,
+                text_rotation = 0.0,
                 text_align = (:center, :center),
-                background_color = boxc,
+                background_color = (0.0, 0.0, 0.0, 0.0),
                 padding = label_pad,
                 cornerradius = label_corner_radius,
-                strokecolor = :black,
+                strokecolor = borderc,
                 strokewidth = label_border_width,
             )
         end

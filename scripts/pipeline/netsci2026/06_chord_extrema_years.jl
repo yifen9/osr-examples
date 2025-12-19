@@ -268,10 +268,6 @@ function main()
             "config_sha256" => MetaUtils.hash_file_or_empty(config_path),
             "edges_max_sha256" => MetaUtils.hash_file_or_empty(p_edges_max),
             "edges_min_sha256" => MetaUtils.hash_file_or_empty(p_edges_min),
-            "svg_max_sha256" => MetaUtils.hash_file_or_empty(p_svg_max),
-            "svg_min_sha256" => MetaUtils.hash_file_or_empty(p_svg_min),
-            "png_max_sha256" => MetaUtils.hash_file_or_empty(p_png_max),
-            "png_min_sha256" => MetaUtils.hash_file_or_empty(p_png_min),
         ),
     )
 

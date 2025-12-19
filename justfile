@@ -28,6 +28,12 @@ fmt:
 PRODUCT_ORCID_DATE := "2025_10"
 PRODUCT_ORCID_TAG := "20251217164227_a2c50a6a55e6b02a"
 
+ns26-pack-out TAG=PRODUCT_ORCID_TAG:
+    bash scripts/tools/ns26_pack_out.sh {{TAG}}
+
+ns26-publish TAG=PRODUCT_ORCID_TAG DST="papers/netsci2026":
+    bash scripts/tools/ns26_publish_assets.sh {{TAG}} {{DST}}
+
 pl-ns26:
     just pl-ns26-00 && \
     just pl-ns26-01 && \
@@ -35,7 +41,8 @@ pl-ns26:
     just pl-ns26-03 && \
     just pl-ns26-04 && \
     just pl-ns26-05 && \
-    just pl-ns26-06
+    just pl-ns26-06 && \
+    just pl-ns26-07
 
 pl-ns26-00 PRODUCT_DATE=PRODUCT_ORCID_DATE PRODUCT_TAG=PRODUCT_ORCID_TAG OUT_ROOT="out/netsci2026" TAG=PRODUCT_TAG:
     julia --project=. scripts/pipeline/netsci2026/00_meta.jl \
@@ -78,3 +85,9 @@ pl-ns26-06 PRODUCT_DATE=PRODUCT_ORCID_DATE PRODUCT_TAG=PRODUCT_ORCID_TAG OUT_ROO
         --output-root {{OUT_ROOT}} \
         --tag {{TAG}} \
         --config papers/netsci2026/config/06_country_chord_extrema.yaml
+
+pl-ns26-07 PRODUCT_DATE=PRODUCT_ORCID_DATE PRODUCT_TAG=PRODUCT_ORCID_TAG OUT_ROOT="out/netsci2026" PAPERS_ROOT="papers/netsci2026" TAG=PRODUCT_TAG:
+    julia --project=. scripts/pipeline/netsci2026/07_stage_papers.jl \
+        --output-root {{OUT_ROOT}} \
+        --papers-root {{PAPERS_ROOT}} \
+        --tag {{TAG}}
