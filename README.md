@@ -23,9 +23,11 @@ Download the ORCID-derived products from Zenodo:
 
 Expected layout:
 
+```bash
 products/orcid/<date>/<tag>/
   edges/
   _meta.json
+```
 
 ## Quickstart
 
