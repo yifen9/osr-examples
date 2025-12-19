@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this analysis pipeline, please cite it."
+title: "osr-examples: Analysis pipelines and figures for ORCID-derived academic mobility networks"
+type: software
+authors:
+  - family-names: Li
+    given-names: Yifeng
+repository-code: "https://github.com/yifen9/osr-examples"
+license: MIT
+references:
+  - type: dataset
+    title: "ORCID-derived Academic Mobility Networks"
+    identifiers:
+      - type: doi
+        value: "10.5281/zenodo.17983291"
