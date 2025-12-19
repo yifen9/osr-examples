@@ -1,0 +1,3 @@
+kind,year_center,value,window_start_year,window_end_year_excl,window_width,window_mode
+max,2024,0.24523789129098886,2023,2026,3,center_right
+min,2017,0.18714624955083478,2016,2019,3,center_right
