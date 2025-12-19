@@ -2,17 +2,17 @@ edge: aff
 
 window:
   time_field: epi_mid_to
-  year_from: 1980
-  year_to: 2024
+  year_from: 1970
+  year_to: 2030
   width: 3
   mode: center_right
   step: 1
 
 sql: |
   SELECT
-    {{year}} AS year_center,
-    {{tmin}} AS window_start_year,
-    {{tmax}} AS window_end_year_excl,
+    CAST({{year}} AS INTEGER) AS year_center,
+    CAST({{tmin}} AS INTEGER) AS window_start_year,
+    CAST({{tmax}} AS INTEGER) AS window_end_year_excl,
     org_country_from AS src,
     org_country_to   AS dst,
     SUM(cnt_edge) AS w,
@@ -22,8 +22,7 @@ sql: |
     AND org_country_to   IS NOT NULL
     AND {{time_field}} >= {{tmin}}
     AND {{time_field}} <  {{tmax}}
-  GROUP BY
-    year_center, window_start_year, window_end_year_excl, src, dst
+  GROUP BY 1,2,3,4,5
 
 compute:
   alg: springrank

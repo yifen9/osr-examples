@@ -1,0 +1,31 @@
+upstream:
+  step02_dir: "02_country_springrank_window"
+  input02_csv: "springrank_windowed.csv"
+  step03_dir: "03_filter_above_mean"
+  keep_years_csv: "keep_years_02.csv"
+
+columns:
+  year: "year_center"
+  country: "country_alpha2"
+  score: "springrank_score"
+  weight: "flow_total"
+  window_start: "window_start_year"
+  window_end_excl: "window_end_year_excl"
+  window_width: "window_width"
+  window_mode: "window_mode"
+
+output:
+  step05_dir: "05_country_springrank_dispersion"
+  csv_all: "dispersion_weighted_all_years.csv"
+  svg_kept: "dispersion_weighted_kept_years.svg"
+
+plot:
+  title: "Weighted dispersion of Country SpringRank over time"
+  width: 1600
+  height: 900
+  x_label: "Year"
+  y_label: "Weighted std of SpringRank score"
+  x_tick_step: 1
+  y_tick_step: 0.05
+  y_format_digits: 1
+  y_limits: [null, null]

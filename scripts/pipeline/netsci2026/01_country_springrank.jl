@@ -4,6 +4,7 @@ using YAML
 using OSRExamples
 using OSRExamples.MetaUtils
 using OSRExamples.FlowUtils
+using OSRExamples.RunConfigUtils
 using OrcidSpringRank
 using Statistics
 
@@ -86,7 +87,21 @@ function main()
         ),
     )
 
-    edges = OrcidSpringRank.query_df(input_root, cfg; memory = memory, threads = threads)
+    raw = YAML.load_file(config_path)
+    haskey(raw, "flow") || error("01 config missing key: flow")
+    fr = raw["flow"]
+    haskey(fr, "edge") || error("01 config.flow missing key: edge")
+    haskey(fr, "sql") || error("01 config.flow missing key: sql")
+
+    tmp = mktempdir()
+    flow_yaml = joinpath(tmp, "flow.yaml")
+    RunConfigUtils.write_query_yaml(flow_yaml, String(fr["edge"]), String(fr["sql"]))
+    flow_cfg = OrcidSpringRank.load_cfg(flow_yaml)
+
+    edges =
+        OrcidSpringRank.query_df(input_root, flow_cfg; memory = memory, threads = threads)
+    rm(tmp; recursive = true, force = true)
+
     flows = FlowUtils.country_flows(
         edges;
         src = :src,

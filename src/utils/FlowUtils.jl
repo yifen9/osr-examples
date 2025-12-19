@@ -9,12 +9,11 @@ function country_flows(
     w::Symbol = :w,
     key::Symbol = :country_alpha2,
 )
-    hasproperty(edges, src) || error("missing column: $src")
-    hasproperty(edges, dst) || error("missing column: $dst")
-    hasproperty(edges, w) || error("missing column: $w")
-
     df = select(edges, src => :src, dst => :dst, w => :w)
     df = dropmissing(df, [:src, :dst, :w])
+
+    df[!, :src] = String.(df.src)
+    df[!, :dst] = String.(df.dst)
     df[!, :w] = Float64.(df.w)
 
     cross = df[df.src .!= df.dst, :]

@@ -5,6 +5,7 @@ using DuckDB
 using OSRExamples
 using OSRExamples.FlowUtils
 using OSRExamples.MetaUtils
+using OSRExamples.TemplateUtils
 using OSRExamples.WindowUtils
 using OrcidSpringRank
 using Statistics
@@ -62,15 +63,6 @@ function parse_args(args::Vector{String})
     tag = tag === nothing ? basename(input_root) : String(tag)
 
     return input_root, output_root, tag, config, memory, threads, force
-end
-
-function render_sql(sql::String; year_center::Int, tmin::Int, tmax::Int, time_field::String)
-    s = String(sql)
-    s = replace(s, "{{year}}" => string(year_center))
-    s = replace(s, "{{tmin}}" => string(Float64(tmin)))
-    s = replace(s, "{{tmax}}" => string(Float64(tmax)))
-    s = replace(s, "{{time_field}}" => time_field)
-    return s
 end
 
 function write_cfg(path::String; λv, methodv)
@@ -156,12 +148,14 @@ function main()
         end
 
         if !isfile(out_edge)
-            q = render_sql(
-                sql_tpl;
-                year_center = y,
-                tmin = start_y,
-                tmax = end_excl_y,
-                time_field = time_field,
+            q = TemplateUtils.render(
+                sql_tpl,
+                Dict(
+                    "year" => y,
+                    "tmin" => start_y,
+                    "tmax" => end_excl_y,
+                    "time_field" => time_field,
+                ),
             )
             DBInterface.execute(con, "COPY ($(q)) TO '$(out_edge)' (FORMAT parquet);")
         end

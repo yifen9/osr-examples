@@ -15,3 +15,14 @@ compute:
   src: src
   dst: dst
   w: w
+
+flow:
+  edge: aff
+  sql: |
+    SELECT
+      org_country_from AS src,
+      org_country_to   AS dst,
+      cnt_edge         AS w
+    FROM edge
+    WHERE org_country_from IS NOT NULL
+      AND org_country_to   IS NOT NULL

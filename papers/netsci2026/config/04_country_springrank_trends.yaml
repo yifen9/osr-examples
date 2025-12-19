@@ -1,0 +1,38 @@
+upstream:
+  step03_dir: "03_filter_above_mean"
+  step02_file: "02_window_filtered.csv"
+
+filter:
+  flow_col: "flow_total"
+  threshold: "above_mean"
+
+plot:
+  output_name: "springrank_trends.svg"
+  width: 1600
+  height: 900
+
+  title: "Country SpringRank over time"
+  xlabel: "Year"
+  ylabel: "SpringRank score"
+
+  linewidth: 2.5
+  alpha: 0.9
+  palette: "wong"
+
+  axis:
+    x:
+      ticks: "each_year"
+      tick_step: 1
+      pad_right: 0.0
+      limits: [null, null]
+    y:
+      ticks: "step"
+      tick_step: 0.10
+      limits: [null, null]
+      format_digits: 2
+
+  legend:
+    enabled: true
+    title: "Country"
+    ncol: 1
+    framevisible: false

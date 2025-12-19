@@ -60,3 +60,14 @@ pl-ns26-03 OUT_ROOT="out/netsci2026" TAG=PRODUCT_ORCID_TAG:
     julia --project=. scripts/pipeline/netsci2026/03_filter_above_mean.jl \
         --output-root {{OUT_ROOT}} \
         --tag {{TAG}}
+
+pl-ns26-04 PRODUCT_DATE=PRODUCT_ORCID_DATE PRODUCT_TAG=PRODUCT_ORCID_TAG OUT_ROOT="out/netsci2026" TAG=PRODUCT_TAG:
+    julia --project=. scripts/pipeline/netsci2026/04_country_springrank_trends.jl \
+        --output-root {{OUT_ROOT}} \
+        --tag {{TAG}}
+
+pl-ns26-05 OUT_ROOT="out/netsci2026" TAG=PRODUCT_ORCID_TAG:
+    julia --project=. scripts/pipeline/netsci2026/05_country_springrank_dispersion.jl \
+        --output-root {{OUT_ROOT}} \
+        --tag {{TAG}} \
+        --config papers/netsci2026/config/05_country_springrank_dispersion.yaml
