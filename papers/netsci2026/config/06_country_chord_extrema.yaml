@@ -1,0 +1,63 @@
+upstream:
+  step02_dir: "02_country_springrank_window"
+  step02_edges_subdir: "edges"
+  step02_csv: "springrank_windowed.csv"
+  step03_dir: "03_filter_above_mean"
+  keep_nodes_csv: "keep_countries_02.csv"
+  step05_dir: "05_country_springrank_dispersion"
+  extrema_csv: "dispersion_extrema_kept_years.csv"
+
+columns:
+  keep_nodes_col: "country_alpha2"
+  year_center: "year_center"
+  country: "country_alpha2"
+  springrank_score: "springrank_score"
+
+io:
+  step06_dir: "06_chord_extrema_years"
+  edges_max_csv: "edges_max.csv"
+  edges_min_csv: "edges_min.csv"
+  svg_max: "chord_max.svg"
+  svg_min: "chord_min.svg"
+  png_max: "chord_max.png"
+  png_min: "chord_min.png"
+
+draw:
+  keep_top_edges: 0
+  edges_weight_col: "w_rank"
+  order_desc: true
+  title_prefix: "CHORD"
+
+chord:
+  figure_width: 2000
+  figure_height: 2000
+  figure_padding: 10
+
+  ring_inner_radius: 1.00
+  ring_outer_radius: 1.20
+
+  ribbon_attach_radius_out: 1.00
+  ribbon_attach_radius_in: 0.92
+  ribbon_control_radius: 0.35
+
+  node_gap_deg: 0
+  start_angle_deg: 90.0
+  clockwise: true
+
+  arc_samples: 180
+  ribbon_samples: 60
+
+  palette_h0: 0.03
+  palette_s: 0.70
+  palette_v: 0.92
+
+  ribbon_alpha: 0.35
+  ribbon_stroke_alpha: 0.25
+  ribbon_stroke_width: 0.8
+
+  label_enable: true
+  label_radius: 1
+  label_fontsize: 16
+  label_pad: 8
+  label_border_width: 2
+  label_corner_radius: 4

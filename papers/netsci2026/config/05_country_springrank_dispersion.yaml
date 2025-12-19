@@ -26,6 +26,6 @@ plot:
   x_label: "Year"
   y_label: "Weighted std of SpringRank score"
   x_tick_step: 1
-  y_tick_step: 0.05
-  y_format_digits: 1
+  y_tick_step: 0.01
+  y_format_digits: 3
   y_limits: [null, null]

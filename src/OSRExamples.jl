@@ -7,5 +7,7 @@ include("utils/RunConfigUtils.jl")
 include("utils/WindowUtils.jl")
 include("utils/FlowUtils.jl")
 include("utils/StatsUtils.jl")
+include("utils/ChordUtils.jl")
+include("utils/ChordPlotUtils.jl")
 
 end

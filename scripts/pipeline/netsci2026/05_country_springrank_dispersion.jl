@@ -52,6 +52,51 @@ function _opt_float(x)
     return Float64(x)
 end
 
+function _argmax(v::AbstractVector{<:Real})
+    isempty(v) && return 0
+    best_i = firstindex(v)
+    best = Float64(v[best_i])
+    for i in eachindex(v)
+        x = Float64(v[i])
+        if x > best
+            best = x
+            best_i = i
+        end
+    end
+    return best_i
+end
+
+function _argmin(v::AbstractVector{<:Real})
+    isempty(v) && return 0
+    best_i = firstindex(v)
+    best = Float64(v[best_i])
+    for i in eachindex(v)
+        x = Float64(v[i])
+        if x < best
+            best = x
+            best_i = i
+        end
+    end
+    return best_i
+end
+
+function _text_offset(
+    x::Real,
+    y::Real,
+    xlo::Real,
+    xhi::Real,
+    ylo::Real,
+    yhi::Real;
+    dx = 12.0,
+    dy = 12.0,
+)
+    xr = xhi - xlo
+    yr = yhi - ylo
+    offx = (x > xhi - 0.02 * xr) ? -dx : dx
+    offy = (y > yhi - 0.05 * yr) ? -dy : dy
+    return (offx, offy)
+end
+
 function main()
     output_root, tag, config_path, force = parse_args(ARGS)
     cfg = YAML.load_file(config_path)
@@ -102,9 +147,10 @@ function main()
 
     out_csv_all = joinpath(out_dir, out_csv_all_name)
     out_svg_kept = joinpath(out_dir, out_svg_kept_name)
+    out_extrema = joinpath(out_dir, "dispersion_extrema_kept_years.csv")
     out_meta = joinpath(out_dir, "_meta.json")
 
-    if (isfile(out_csv_all) || isfile(out_svg_kept)) && !force
+    if (isfile(out_csv_all) || isfile(out_svg_kept) || isfile(out_extrema)) && !force
         error("outputs exist in: $out_dir (use --force to overwrite)")
     end
 
@@ -172,15 +218,69 @@ function main()
 
     keepy_df = DataFrame(CSV.File(keep_years_csv))
     hasproperty(keepy_df, :year_center) ||
-        error("keep_years_02.csv missing column: year_center")
+        error("keep_years csv missing column: year_center")
     keep_set = Set(Int.(keepy_df.year_center))
 
     rows_kept = rows[in.(rows.year_center, Ref(keep_set)), :]
+    sort!(rows_kept, :year_center)
+
     years = rows_kept.year_center
     ys = rows_kept.score_std_weighted
 
+    imax = _argmax(ys)
+    imin = _argmin(ys)
+
+    extrema = DataFrame(
+        kind = String[],
+        year_center = Int[],
+        value = Float64[],
+        window_start_year = Int[],
+        window_end_year_excl = Int[],
+        window_width = Int[],
+        window_mode = String[],
+    )
+
+    if imax > 0
+        push!(
+            extrema,
+            (
+                kind = "max",
+                year_center = Int(rows_kept.year_center[imax]),
+                value = Float64(rows_kept.score_std_weighted[imax]),
+                window_start_year = Int(rows_kept.window_start_year[imax]),
+                window_end_year_excl = Int(rows_kept.window_end_year_excl[imax]),
+                window_width = Int(rows_kept.window_width[imax]),
+                window_mode = String(rows_kept.window_mode[imax]),
+            ),
+        )
+    end
+
+    if imin > 0
+        push!(
+            extrema,
+            (
+                kind = "min",
+                year_center = Int(rows_kept.year_center[imin]),
+                value = Float64(rows_kept.score_std_weighted[imin]),
+                window_start_year = Int(rows_kept.window_start_year[imin]),
+                window_end_year_excl = Int(rows_kept.window_end_year_excl[imin]),
+                window_width = Int(rows_kept.window_width[imin]),
+                window_mode = String(rows_kept.window_mode[imin]),
+            ),
+        )
+    end
+
+    CSV.write(out_extrema, extrema)
+
     fig = Figure(size = (figw, figh))
-    ax = Axis(fig[1, 1], title = title, xlabel = xlab, ylabel = ylab)
+    gl = fig[1, 1] = GridLayout()
+    ax = Axis(gl[1, 1], title = title, xlabel = xlab, ylabel = ylab)
+
+    ax_leg = Axis(gl[1, 2])
+    hidedecorations!(ax_leg)
+    hidespines!(ax_leg)
+
+    colsize!(gl, 2, Relative(0.20))
 
     if !isempty(years)
         ax.xticks = collect(minimum(years):x_tick_step:maximum(years))
@@ -206,8 +306,83 @@ function main()
     yt = collect(ylo:y_tick_step:yhi)
     ax.yticks = (yt, [@sprintf("%.*f", y_digits, v) for v in yt])
 
+    if !isempty(years)
+        xlims!(ax, minimum(years) - 0.5, maximum(years) + 0.5)
+    end
+
     lines!(ax, years, ys)
     scatter!(ax, years, ys)
+
+    max_year = imax > 0 ? Int(years[imax]) : 0
+    max_val = imax > 0 ? Float64(ys[imax]) : 0.0
+    min_year = imin > 0 ? Int(years[imin]) : 0
+    min_val = imin > 0 ? Float64(ys[imin]) : 0.0
+
+    if imax > 0
+        scatter!(
+            ax,
+            [Float64(max_year)],
+            [max_val];
+            markersize = 18,
+            color = :black,
+            strokecolor = :black,
+            strokewidth = 2,
+        )
+    end
+    if imin > 0
+        scatter!(
+            ax,
+            [Float64(min_year)],
+            [min_val];
+            markersize = 18,
+            color = :white,
+            strokecolor = :black,
+            strokewidth = 2,
+        )
+    end
+
+    xlims!(ax_leg, 0, 1)
+    ylims!(ax_leg, 0, 1)
+
+    y0 = 0.92
+    dy = 0.10
+    fs = 16
+
+    text!(
+        ax_leg,
+        0.05,
+        y0;
+        text = "Extrema",
+        align = (:left, :center),
+        color = :black,
+        fontsize = fs + 2,
+    )
+
+    if imax > 0
+        s = "MAX  year=$(max_year)  std=$( @sprintf("%.*f", y_digits, max_val) )"
+        text!(
+            ax_leg,
+            0.05,
+            y0 - dy;
+            text = s,
+            align = (:left, :center),
+            color = :black,
+            fontsize = fs,
+        )
+    end
+
+    if imin > 0
+        s = "MIN  year=$(min_year)  std=$( @sprintf("%.*f", y_digits, min_val) )"
+        text!(
+            ax_leg,
+            0.05,
+            y0 - 2dy;
+            text = s,
+            align = (:left, :center),
+            color = :black,
+            fontsize = fs,
+        )
+    end
 
     save(out_svg_kept, fig)
 
@@ -221,12 +396,28 @@ function main()
             "weighted_std" => "nist_dataplot_eq_2_22",
         ),
         "inputs" => Dict("02_csv_all" => in02, "03_keep_years_csv" => keep_years_csv),
+        "outputs" => Dict(
+            "csv_all" => out_csv_all,
+            "svg_kept" => out_svg_kept,
+            "extrema_csv" => out_extrema,
+        ),
+        "extrema" => Dict(
+            "max" => (
+                imax > 0 ?
+                Dict("year_center" => Int(years[imax]), "value" => Float64(ys[imax])) : Dict()
+            ),
+            "min" => (
+                imin > 0 ?
+                Dict("year_center" => Int(years[imin]), "value" => Float64(ys[imin])) : Dict()
+            ),
+        ),
         "hashes" => Dict(
             "config_sha256" => MetaUtils.hash_file_or_empty(config_path),
             "in02_sha256" => MetaUtils.hash_file_or_empty(in02),
             "keep_years_sha256" => MetaUtils.hash_file_or_empty(keep_years_csv),
             "out_csv_all_sha256" => MetaUtils.hash_file_or_empty(out_csv_all),
             "out_svg_kept_sha256" => MetaUtils.hash_file_or_empty(out_svg_kept),
+            "out_extrema_sha256" => MetaUtils.hash_file_or_empty(out_extrema),
         ),
     )
 

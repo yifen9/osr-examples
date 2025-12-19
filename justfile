@@ -34,7 +34,8 @@ pl-ns26:
     just pl-ns26-02 && \
     just pl-ns26-03 && \
     just pl-ns26-04 && \
-    just pl-ns26-05
+    just pl-ns26-05 && \
+    just pl-ns26-06
 
 pl-ns26-00 PRODUCT_DATE=PRODUCT_ORCID_DATE PRODUCT_TAG=PRODUCT_ORCID_TAG OUT_ROOT="out/netsci2026" TAG=PRODUCT_TAG:
     julia --project=. scripts/pipeline/netsci2026/00_meta.jl \
@@ -71,3 +72,9 @@ pl-ns26-05 OUT_ROOT="out/netsci2026" TAG=PRODUCT_ORCID_TAG:
         --output-root {{OUT_ROOT}} \
         --tag {{TAG}} \
         --config papers/netsci2026/config/05_country_springrank_dispersion.yaml
+
+pl-ns26-06 PRODUCT_DATE=PRODUCT_ORCID_DATE PRODUCT_TAG=PRODUCT_ORCID_TAG OUT_ROOT="out/netsci2026" TAG=PRODUCT_TAG:
+    julia --project=. scripts/pipeline/netsci2026/06_chord_extrema_years.jl \
+        --output-root {{OUT_ROOT}} \
+        --tag {{TAG}} \
+        --config papers/netsci2026/config/06_country_chord_extrema.yaml

@@ -1,6 +1,6 @@
 module TemplateUtils
 
-function render(s::AbstractString, vars::Dict{String,Any})
+function render(s::AbstractString, vars::AbstractDict{String,<:Any})
     out = String(s)
     for (k, v) in vars
         out = replace(out, "{{$(k)}}" => string(v))
