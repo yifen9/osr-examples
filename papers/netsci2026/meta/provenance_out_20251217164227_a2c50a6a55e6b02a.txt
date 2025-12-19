@@ -1,0 +1,17 @@
+timestamp_utc: 2025-12-19T04:09:32Z
+tag: 20251217164227_a2c50a6a55e6b02a
+src: /workspace/out/netsci2026/20251217164227_a2c50a6a55e6b02a
+dst: /workspace/papers/netsci2026/out/20251217164227_a2c50a6a55e6b02a
+git_commit: 5fb0494fd0f0e54a139c8a2a83b32e3ee7f36581
+git_dirty_files: 0
+file_count: 87
+total_bytes: 33494295
+
+meta_files:
+  - papers/netsci2026/out/20251217164227_a2c50a6a55e6b02a/01_country_springrank/_meta.json
+  - papers/netsci2026/out/20251217164227_a2c50a6a55e6b02a/02_country_springrank_window/_meta.json
+  - papers/netsci2026/out/20251217164227_a2c50a6a55e6b02a/03_filter_above_mean/_meta.json
+  - papers/netsci2026/out/20251217164227_a2c50a6a55e6b02a/04_country_springrank_trends/_meta.json
+  - papers/netsci2026/out/20251217164227_a2c50a6a55e6b02a/05_country_springrank_dispersion/_meta.json
+  - papers/netsci2026/out/20251217164227_a2c50a6a55e6b02a/06_chord_extrema_years/_meta.json
+  - papers/netsci2026/out/20251217164227_a2c50a6a55e6b02a/_meta.json
